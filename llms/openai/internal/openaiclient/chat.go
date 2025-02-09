@@ -292,9 +292,11 @@ type ChatCompletionChoice struct {
 
 // ChatUsage is the usage of a chat completion request.
 type ChatUsage struct {
-	PromptTokens            int `json:"prompt_tokens"`
-	CompletionTokens        int `json:"completion_tokens"`
-	TotalTokens             int `json:"total_tokens"`
+	PromptTokens            int     `json:"prompt_tokens"`
+	CompletionTokens        int     `json:"completion_tokens"`
+	TotalTokens             int     `json:"total_tokens"`
+	TimingTokenGeneration   float64 `json:"timing_token_generation,omitempty"`
+	TimingPromptProcessing  float64 `json:"timing_prompt_processing,omitempty"`
 	CompletionTokensDetails struct {
 		ReasoningTokens int `json:"reasoning_tokens"`
 	} `json:"completion_tokens_details"`
@@ -312,9 +314,11 @@ type ChatCompletionResponse struct {
 }
 
 type Usage struct {
-	PromptTokens            int `json:"prompt_tokens"`
-	CompletionTokens        int `json:"completion_tokens"`
-	TotalTokens             int `json:"total_tokens"`
+	PromptTokens            int     `json:"prompt_tokens"`
+	CompletionTokens        int     `json:"completion_tokens"`
+	TotalTokens             int     `json:"total_tokens"`
+	TimingTokenGeneration   float64 `json:"timing_token_generation,omitempty"`
+	TimingPromptProcessing  float64 `json:"timing_prompt_processing,omitempty"`
 	CompletionTokensDetails struct {
 		ReasoningTokens int `json:"reasoning_tokens"`
 	} `json:"completion_tokens_details"`
@@ -485,6 +489,8 @@ func combineStreamingChatResponse(
 			response.Usage.CompletionTokens = streamResponse.Usage.CompletionTokens
 			response.Usage.PromptTokens = streamResponse.Usage.PromptTokens
 			response.Usage.TotalTokens = streamResponse.Usage.TotalTokens
+			response.Usage.TimingPromptProcessing = streamResponse.Usage.TimingPromptProcessing
+			response.Usage.TimingTokenGeneration = streamResponse.Usage.TimingTokenGeneration
 			response.Usage.CompletionTokensDetails.ReasoningTokens = streamResponse.Usage.CompletionTokensDetails.ReasoningTokens
 		}
 

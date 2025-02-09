@@ -36,9 +36,11 @@ type CompletionResponse struct {
 	Model  string `json:"model,omitempty"`
 	Object string `json:"object,omitempty"`
 	Usage  struct {
-		CompletionTokens float64 `json:"completion_tokens,omitempty"`
-		PromptTokens     float64 `json:"prompt_tokens,omitempty"`
-		TotalTokens      float64 `json:"total_tokens,omitempty"`
+		CompletionTokens       float64 `json:"completion_tokens,omitempty"`
+		PromptTokens           float64 `json:"prompt_tokens,omitempty"`
+		TotalTokens            float64 `json:"total_tokens,omitempty"`
+		TimingTokenGeneration  float64 `json:"timing_token_generation,omitempty"`
+		TimingPromptProcessing float64 `json:"timing_prompt_processing,omitempty"`
 	} `json:"usage,omitempty"`
 }
 
