@@ -1,4 +1,4 @@
-module github.com/tmc/langchaingo
+module github.com/Swarmind/langchaingo
 
 go 1.22.0
 
@@ -228,3 +228,5 @@ require (
 	google.golang.org/protobuf v1.34.1
 	sigs.k8s.io/yaml v1.3.0
 )
+
+replace github.com/tmc/langchaingo v0.1.13-pre.1 => github.com/Swarmind/langchaingo v0.0.1
