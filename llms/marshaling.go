@@ -39,6 +39,10 @@ func (mc *MessageContent) UnmarshalJSON(data []byte) error {
 				URL    string `json:"url"`
 				Detail string `json:"detail,omitempty"`
 			} `json:"image_url,omitempty"`
+			InputAudio struct {
+				Data   string `json:"data"`
+				Format string `json:"format"`
+			} `json:"input_audio,omitempty"`
 			Binary struct {
 				Data     string `json:"data"`
 				MIMEType string `json:"mime_type"`
@@ -69,6 +73,15 @@ func (mc *MessageContent) UnmarshalJSON(data []byte) error {
 			mc.Parts = append(mc.Parts, ImageURLContent{
 				URL:    part.ImageURL.URL,
 				Detail: part.ImageURL.Detail,
+			})
+		case "input_audio":
+			decoded, err := base64.StdEncoding.DecodeString(part.InputAudio.Data)
+			if err != nil {
+				return fmt.Errorf("failed to decode input_audio data: %w", err)
+			}
+			mc.Parts = append(mc.Parts, AudioContent{
+				Data:   decoded,
+				Format: part.InputAudio.Format,
 			})
 		case "binary":
 			decoded, err := base64.StdEncoding.DecodeString(part.Binary.Data)
@@ -157,6 +170,49 @@ func (iuc *ImageURLContent) UnmarshalJSON(data []byte) error {
 		iuc.Detail = detail
 	}
 	iuc.URL = url
+	return nil
+}
+
+func (ac AudioContent) MarshalJSON() ([]byte, error) {
+	r := struct {
+		Type       string            `json:"type"`
+		InputAudio map[string]string `json:"input_audio"`
+	}{
+		Type: "image_url",
+		InputAudio: map[string]string{
+			"data":   base64.StdEncoding.EncodeToString(ac.Data),
+			"format": ac.Format,
+		},
+	}
+	return json.Marshal(r)
+}
+
+func (ac *AudioContent) UnmarshalJSON(data []byte) error {
+	var m map[string]interface{}
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+	if m["type"] != "input_audio" {
+		return fmt.Errorf("invalid type for AudioContent: %v", m["type"])
+	}
+	inputAudio, ok := m["input_audio"].(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("invalid input_audio field in AudioContent")
+	}
+	format, ok := inputAudio["format"].(string)
+	if !ok {
+		return fmt.Errorf("invalid format field in AudioContent")
+	}
+	encodedData, ok := inputAudio["data"].(string)
+	if !ok {
+		return fmt.Errorf("invalid data field in AudioContent")
+	}
+	enc, err := base64.StdEncoding.DecodeString(encodedData)
+	if err != nil {
+		return fmt.Errorf("error decoding base64 data: %w", err)
+	}
+	ac.Format = format
+	ac.Data = enc
 	return nil
 }
 

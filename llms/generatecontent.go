@@ -30,6 +30,14 @@ func BinaryPart(mime string, data []byte) BinaryContent {
 	}
 }
 
+// AudioPart creates a new AudioContent from the given base64 data string and format ("wav || "mp3") string.
+func AudioPart(data []byte, format string) AudioContent {
+	return AudioContent{
+		Data:   data,
+		Format: format,
+	}
+}
+
 // ImageURLPart creates a new ImageURLContent from the given URL.
 func ImageURLPart(url string) ImageURLContent {
 	return ImageURLContent{
@@ -72,6 +80,19 @@ func (iuc ImageURLContent) String() string {
 }
 
 func (ImageURLContent) isPart() {}
+
+// AudioContent is content with a base64 audio data with format tag ("wav" || "mp3").
+type AudioContent struct {
+	Format string `json:"format"`
+	Data   []byte `json:"data"`
+}
+
+func (ac AudioContent) String() string {
+	base64Encoded := base64.StdEncoding.EncodeToString(ac.Data)
+	return "format:" + ac.Format + ";base64," + base64Encoded
+}
+
+func (AudioContent) isPart() {}
 
 // BinaryContent is content holding some binary data with a MIME type.
 type BinaryContent struct {
@@ -173,6 +194,8 @@ func ShowMessageContents(w io.Writer, msgs []MessageContent) {
 				fmt.Fprintf(w, "TextContent %q\n", pp.Text)
 			case ImageURLContent:
 				fmt.Fprintf(w, "ImageURLPart %q\n", pp.URL)
+			case AudioContent:
+				fmt.Fprintf(w, "AudioContent Format=%q, size=%d\n", pp.Format, len(pp.Data))
 			case BinaryContent:
 				fmt.Fprintf(w, "BinaryContent MIME=%q, size=%d\n", pp.MIMEType, len(pp.Data))
 			case ToolCall:
