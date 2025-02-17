@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/Swarmind/langchaingo/llms"
 	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/openai/internal/openaiclient"
