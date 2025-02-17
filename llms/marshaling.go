@@ -178,7 +178,7 @@ func (ac AudioContent) MarshalJSON() ([]byte, error) {
 		Type       string            `json:"type"`
 		InputAudio map[string]string `json:"input_audio"`
 	}{
-		Type: "image_url",
+		Type: "input_audio",
 		InputAudio: map[string]string{
 			"data":   base64.StdEncoding.EncodeToString(ac.Data),
 			"format": ac.Format,
