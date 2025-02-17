@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/Swarmind/langchaingo/llms"
 	"github.com/tmc/langchaingo/callbacks"
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/openai/internal/openaiclient"
@@ -221,6 +222,8 @@ func ExtractToolParts(msg *ChatMessage) ([]llms.ContentPart, []llms.ToolCall) {
 		case llms.TextContent:
 			content = append(content, p)
 		case llms.ImageURLContent:
+			content = append(content, p)
+		case llms.AudioContent:
 			content = append(content, p)
 		case llms.BinaryContent:
 			content = append(content, p)
